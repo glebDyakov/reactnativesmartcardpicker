@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "smartcardpicker",
+    "slug": "smartcardpicker",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "smartcardpicker"
+}
