@@ -684,6 +684,8 @@ function CardDetailActivity({ navigation, route }) {
 
 function BindingActivity({ route, navigation }) {
   
+  const [ inputBarCode, setInputBarCode ] = useState("");
+
   const [ openScanCamera, setOpenScanCamera ] = useState(false);
 
 
@@ -698,7 +700,11 @@ function BindingActivity({ route, navigation }) {
   }, []);
   const handleBarCodeScanned = ({ type, data }) => {
     state.inputBarCode = data;
-    setScanned(true);
+    setInputBarCode(data);
+
+    // setScanned(true);
+    setScanned(false);
+
     setOpenScanCamera(false);
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     console.log(`Bar code with type ${type} and data ${data} has been scanned!`)
@@ -732,7 +738,7 @@ function BindingActivity({ route, navigation }) {
             style={StyleSheet.absoluteFillObject}
           />
         :
-        <Text>Откройте камеру</Text>
+          <Text></Text> 
       }
       {scanned && <Button title={'Tap to Scan Again'} onPress={() => {
         setScanned(false)
@@ -768,8 +774,10 @@ function BindingActivity({ route, navigation }) {
         <View style={{ alignItems: 'center', flexDirection: 'row' }}>
           <TextInput
             style={styles.inputLabel}
+            value={inputBarCode}
             onChangeText={(currentBarCode) => {
               state.inputBarCode = currentBarCode
+              setInputBarCode(currentBarCode);
               console.log(`Введённое штрих-код карты: ${state.inputBarCode}`);
             }}
           />
@@ -786,13 +794,15 @@ function BindingActivity({ route, navigation }) {
               onPress={ () => {
                 console.log("Добавить карту")
                 db.transaction(transaction => {
-                let sqlStatement = `INSERT INTO \"smartcards\"(cardname, barcode, cardtype) VALUES (\"${state.inputCardName}\", \"${state.inputBarCode}\", \"${cardType}\");`
+                // let sqlStatement = `INSERT INTO \"smartcards\"(cardname, barcode, cardtype) VALUES (\"${state.inputCardName}\", \"${state.inputBarCode}\", \"${cardType}\");`
+                let sqlStatement = `INSERT INTO \"smartcards\"(cardname, barcode, cardtype) VALUES (\"${state.inputCardName}\", \"${inputBarCode}\", \"${cardType}\");`
                   transaction.executeSql(sqlStatement, null, (tx, card) => {
                     console.log("successOfInsert")
                   }, (tx) => {
                     console.log("errorOfInsert")
                   })
                 })
+                navigation.navigate("CardsListActivity")
               } }
             />
           </View>
