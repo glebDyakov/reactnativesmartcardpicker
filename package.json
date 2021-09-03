@@ -13,6 +13,8 @@
     "@react-navigation/stack": "^6.0.7",
     "@waheed_akhter/react-native-imagebutton": "^1.0.0",
     "expo": "^42.0.3",
+    "expo-barcode-scanner": "~10.2.2",
+    "expo-camera": "~11.2.2",
     "expo-linking": "~2.3.1",
     "expo-splash-screen": "~0.11.2",
     "expo-sqlite": "~9.2.1",

@@ -14,6 +14,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 // import * as Linking from 'expo-linking';
 
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
 // const prefix = Linking.createURL('/');
 export default function App() {
@@ -101,13 +102,11 @@ function MainActivity() {
 
   var cardsForOut = []
 
-  const imageURI = 'http://books.google.com/books/content?id=PCDengEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api'
-  
   db.transaction(transaction => {
 
     let sqlStatement = "CREATE TABLE IF NOT EXISTS smartcards (_id INTEGER PRIMARY KEY AUTOINCREMENT, cardname TEXT, barcode TEXT, cardtype TEXT);"
     transaction.executeSql(sqlStatement, null, (tx, receivedTable) => {
-      console.log(`tablecreate: ${receivedTable}`)
+      // console.log(`tablecreate: ${receivedTable}`)
     })
 
     // let sqlStatement = "INSERT INTO \"smartcards\"(cardname, barcode, cardtype) VALUES (\"" + smartCardName.getText().toString() + "\", \"" + barCode.getText().toString() + "\", \"" + cardType + "\");"
@@ -138,9 +137,9 @@ function MainActivity() {
       // }
 
       Array.from(receivedCards.rows).forEach((cardRow, cardRowIdx) => {
-        console.log(`cardRow: ${Object.values(receivedCards.rows.item(cardRowIdx))[0]}`)
+        // console.log(`cardRow: ${Object.values(receivedCards.rows.item(cardRowIdx))[0]}`)
         Object.values(receivedCards.rows.item(cardRowIdx)).map((cardColumn, cardColumnIdx) => {
-          console.log(`cardColumn: ${cardColumn}`)
+          // console.log(`cardColumn: ${cardColumn}`)
         })
         cardsForOut = [
           ...cardsForOut,
@@ -183,15 +182,15 @@ function MainActivity() {
       // console.log(`cardsForOut: ${cardsForOut[0].}`)
 
       cardsForOut.forEach(cardForOut => {
-        console.log(`cardForOut: ${Object.values(cardForOut)[0]}`)
-        console.log(`cardForOut: ${Object.values(cardForOut)[1]}`)
-        console.log(`cardForOut: ${Object.values(cardForOut)[2]}`)
-        console.log(`cardForOut: ${Object.values(cardForOut)[3]}`)
+        // console.log(`cardForOut: ${Object.values(cardForOut)[0]}`)
+        // console.log(`cardForOut: ${Object.values(cardForOut)[1]}`)
+        // console.log(`cardForOut: ${Object.values(cardForOut)[2]}`)
+        // console.log(`cardForOut: ${Object.values(cardForOut)[3]}`)
         
       })
       
     }, (tx) => {
-      console.log(`error`)
+      // console.log(`error`)
     })
 
   })
@@ -220,7 +219,7 @@ function MainActivity() {
           db.transaction(transaction => {
             let sqlStatement = "CREATE TABLE IF NOT EXISTS passwords (_id INTEGER PRIMARY KEY AUTOINCREMENT, password TEXT);"
             transaction.executeSql(sqlStatement, null, (tx, receivedTable) => {
-              console.log(`tablecreate: ${receivedTable}`)
+              // console.log(`tablecreate: ${receivedTable}`)
             })
             sqlStatement = "SELECT * FROM passwords;"
             transaction.executeSql(sqlStatement, null, (tx, receivedPasswords) => {
@@ -325,11 +324,11 @@ function MainActivity() {
           cardsInDB.map(card => {
             return (
               Object.values(card)[3].includes("five") ?
-                <Image key={Object.values(card)[0]} style={{ marginTop: '15px', width: '650px', height: '250px' }} source={ fiveImage } />
+                <Image key={Object.values(card)[0]} style={{ marginTop: 15, width: 650, height: 250 }} source={ fiveImage } />
                 : Object.values(card)[3].includes("cross") ?
-                  <Image key={Object.values(card)[0]} style={{ marginTop: '15px', width: '650px', height: '250px' }} source={ crossImage } />
+                  <Image key={Object.values(card)[0]} style={{ marginTop: 15, width: 650, height: 250 }} source={ crossImage } />
                 :
-                  <Image key={Object.values(card)[0]} style={{ marginTop: '15px', width: '650px', height: '250px' }} source={ magnetImage } />
+                  <Image key={Object.values(card)[0]} style={{ marginTop: 15, width: 650, height: 250 }} source={ magnetImage } />
             )
           })
         }
@@ -354,39 +353,39 @@ function MainActivity() {
           <TouchableOpacity onPress={() => {
             console.log("переходим в окно добавления карты")
           }}>
-            <Image style={{ width: '650px', height: '250px' }} source={ fiveImage } />
+            <Image style={{ width: 650, height: 250 }} source={ fiveImage } />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
             console.log("переходим в окно добавления карты")
           }}>
-            <Image style={{ width: '650px', height: '250px' }} source={ crossImage } />
+            <Image style={{ width: 650, height: 250 }} source={ crossImage } />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
             console.log("переходим в окно добавления карты")
           }}>
-            <Image style={{ width: '650px', height: '250px' }} source={ magnetImage } />
+            <Image style={{ width: 650, height: 250 }} source={ magnetImage } />
           </TouchableOpacity>
         </ScrollView>
       </View>
       
       <View style={ styles.cardDetail }>
         
-        <Image style={{ width: '650px', height: '250px' }} source={ fiveImage } />
+        <Image style={{ width: 650, height: 250 }} source={ fiveImage } />
         
         <Text style={{
-          fontSize: '36px',
-          marginTop: '65px',
-          marginBottom: '65px',
+          fontSize: 36,
+          marginTop: 65,
+          marginBottom: 65,
         }}>Пятёрочка</Text>
         
-        <Image style={{ width: '250px', height: '100px' }} source={ barcodeImage } />
+        <Image style={{ width: 250, height: 100 }} source={ barcodeImage } />
         
         <Text>123465789123</Text>
       </View>
 
       <View style={ styles.bindingCard }>
       
-        <Image style={{ width: '650px', height: '250px' }} source={ fiveImage } />
+        <Image style={{ width: 650, height: 250 }} source={ fiveImage } />
         {/* <Image source={ require('./assets/magnet.jpg') } /> */}
         
         <Text>Введите название карты</Text>
@@ -410,7 +409,7 @@ function MainActivity() {
             <TouchableOpacity onPress={() => {
               console.log("открываем камеру")
             }}>
-              <Image style={{ margin: '15px', width: '30px', height: '30px' }} source={ cameraImage } />
+              <Image style={{ margin: 15, width: 30, height: 30 }} source={ cameraImage } />
             </TouchableOpacity>
           
           </View>
@@ -486,7 +485,7 @@ function CardsListActivity({ navigation }) {
 
     let sqlStatement = "CREATE TABLE IF NOT EXISTS smartcards (_id INTEGER PRIMARY KEY AUTOINCREMENT, cardname TEXT, barcode TEXT, cardtype TEXT);"
     transaction.executeSql(sqlStatement, null, (tx, receivedTable) => {
-      console.log(`tablecreate: ${receivedTable}`)
+      // console.log(`tablecreate: ${receivedTable}`)
     })
 
     sqlStatement = "SELECT * FROM smartcards;"
@@ -495,9 +494,9 @@ function CardsListActivity({ navigation }) {
       cards = Array.from(receivedCards.rows)
       let cardIdx = 0
       Array.from(receivedCards.rows).forEach((cardRow, cardRowIdx) => {
-        console.log(`cardRow: ${Object.values(receivedCards.rows.item(cardRowIdx))[0]}`)
+        // console.log(`cardRow: ${Object.values(receivedCards.rows.item(cardRowIdx))[0]}`)
         Object.values(receivedCards.rows.item(cardRowIdx)).map((cardColumn, cardColumnIdx) => {
-          console.log(`cardColumn: ${cardColumn}`)
+          // console.log(`cardColumn: ${cardColumn}`)
         })
         cardsForOut = [
           ...cardsForOut,
@@ -511,14 +510,14 @@ function CardsListActivity({ navigation }) {
       })
       setCardsInDB(cardsForOut)
       cardsForOut.forEach(cardForOut => {
-        console.log(`cardForOut: ${Object.values(cardForOut)[0]}`)
-        console.log(`cardForOut: ${Object.values(cardForOut)[1]}`)
-        console.log(`cardForOut: ${Object.values(cardForOut)[2]}`)
-        console.log(`cardForOut: ${Object.values(cardForOut)[3]}`)
+        // console.log(`cardForOut: ${Object.values(cardForOut)[0]}`)
+        // console.log(`cardForOut: ${Object.values(cardForOut)[1]}`)
+        // console.log(`cardForOut: ${Object.values(cardForOut)[2]}`)
+        // console.log(`cardForOut: ${Object.values(cardForOut)[3]}`)
         
       })
     }, (tx) => {
-      console.log(`error`)
+      // console.log(`error`)
     })
   })
   return (
@@ -539,7 +538,7 @@ function CardsListActivity({ navigation }) {
                     cardType: Object.values(card)[3],
                   })
                 }}>
-                  <Image style={{ marginTop: '15px', width: '650px', height: '250px' }} source={ fiveImage } />
+                  <Image style={{ marginTop: 15, width: 650, height: 250 }} source={ fiveImage } />
                 </TouchableOpacity>
                 : Object.values(card)[3].includes("cross") ?
                   <TouchableOpacity key={Object.values(card)[0]} onPress={() => {
@@ -550,7 +549,7 @@ function CardsListActivity({ navigation }) {
                       cardType: Object.values(card)[3],
                     })
                   }}>
-                    <Image style={{ marginTop: '15px', width: '650px', height: '250px' }} source={ crossImage } />
+                    <Image style={{ marginTop: 15, width: 650, height: 250 }} source={ crossImage } />
                   </TouchableOpacity>  
                 :
                 <TouchableOpacity key={Object.values(card)[0]} onPress={() => {
@@ -561,7 +560,7 @@ function CardsListActivity({ navigation }) {
                     cardType: Object.values(card)[3],
                   })
                 }}>
-                  <Image style={{ marginTop: '15px', width: '650px', height: '250px' }} source={ magnetImage } />
+                  <Image style={{ marginTop: 15, width: 650, height: 250 }} source={ magnetImage } />
                 </TouchableOpacity>
             )
           })
@@ -569,7 +568,7 @@ function CardsListActivity({ navigation }) {
         
         {/* <Image source={ require('./assets/five.jpg') } /> */}
 
-        <View style={ styles.addCardBtnAlign }>
+        <View style={ styles.addCardBtnAlign, { marginTop: 25 } }>
           <View style={ styles.addCardBtnLayout }>
             <Button color="rgb(255, 0, 0)" style={ styles.addCardBtn } title="+"
               onPress={ () => {
@@ -604,32 +603,31 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
-    margin: '35px',
-    width: '50px',
-    height: '50px',
-    borderRadius: '15px',
+    margin: 35,
+    width: 50,
+    height: 50,
+    borderRadius: 15,
     backgroundColor: 'rgb(255, 0, 0)'
   },
   password: {
-    marginTop: '15px',
-    padding: '15px',
-    border: '1px solid black',
-    borderRadius: '10px',
+    marginTop: 15,
+    borderColor: 'rgb(0, 0, 0)',
+    borderWidth: 1,
+    borderRadius: 10, 
     textAlign: 'center'
   },
   login: {
-    fontSize: '24px'
+    fontSize: 24
   },
   addCardBtn: {
-    borderRadius: '135px'
+    borderRadius: 13
   },
   addCardBtn: {
     
   },
   addCardBtnLayout: {
-    borderRadius: '100%',
-    width: '150px',
-    height: '150px',   
+    width: 150,
+    height: 150,   
   },
   addCardBtnAlign: {
     alignItems: 'center'
@@ -642,7 +640,7 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     borderBottomColor: 'black',
-    borderBottomWidth: '1px'
+    borderBottomWidth: 1
   }
 });
 
@@ -665,18 +663,18 @@ function CardDetailActivity({ navigation, route }) {
       <View style={ styles.cardDetail }>
         {
           cardType.includes('five') ?
-            <Image style={{ width: '650px', height: '250px' }} source={ fiveImage } />
+            <Image style={{ width: 650, height: 250 }} source={ fiveImage } />
           : cardType.includes('cross') ?
-            <Image style={{ width: '650px', height: '250px' }} source={ crossImage } />
+            <Image style={{ width: 650, height: 250 }} source={ crossImage } />
           :
-            <Image style={{ width: '650px', height: '250px' }} source={ magnetImage } />
+            <Image style={{ width: 650, height: 250 }} source={ magnetImage } />
         }
         <Text style={{
-          fontSize: '36px',
-          marginTop: '65px',
-          marginBottom: '65px',
+          fontSize: 36,
+          marginTop: 65,
+          marginBottom: 65,
         }}>{ cardName }</Text>
-        <Image style={{ width: '250px', height: '100px' }} source={ barcodeImage } />
+        <Image style={{ width: 250, height: 100 }} source={ barcodeImage } />
         <Text>{ barCode }</Text>
       </View>
     </View>
@@ -685,6 +683,33 @@ function CardDetailActivity({ navigation, route }) {
 }
 
 function BindingActivity({ route, navigation }) {
+  
+  const [ openScanCamera, setOpenScanCamera ] = useState(false);
+
+
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+      setOpenScanCamera(false);
+    })();
+  }, []);
+  const handleBarCodeScanned = ({ type, data }) => {
+    state.inputBarCode = data;
+    setScanned(true);
+    setOpenScanCamera(false);
+    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    console.log(`Bar code with type ${type} and data ${data} has been scanned!`)
+  };
+  if (hasPermission === null) {
+    return <Text>Requesting for camera permission</Text>;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
   const fiveImage = require('./assets/five.jpg')
   const crossImage = require('./assets/cross.jpg')
   const magnetImage = require('./assets/magnet.jpg')
@@ -700,16 +725,34 @@ function BindingActivity({ route, navigation }) {
   const db = SQLite.openDatabase('smartcardspickerdb.db')
   return (
     <View>
+      {
+        openScanCamera ?
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            style={StyleSheet.absoluteFillObject}
+          />
+        :
+        <Text>Откройте камеру</Text>
+      }
+      {scanned && <Button title={'Tap to Scan Again'} onPress={() => {
+        setScanned(false)
+        // setOpenScanCamera(false);
+        console.log(`открываем камеру: ${scanned}`)
+      }} />}
       <View style={ styles.bindingCard }>
         {
         cardType.includes('five') ?
-          <Image style={{ width: '650px', height: '250px' }} source={ fiveImage } />
+          <Image style={{ width: 650, height: 250 }} source={ fiveImage } />
         : cardType.includes('cross') ?
-          <Image style={{ width: '650px', height: '250px' }} source={ crossImage } />
+          <Image style={{ width: 650, height: 250 }} source={ crossImage } />
         :
-          <Image style={{ width: '650px', height: '250px' }} source={ magnetImage } />
+          <Image style={{ width: 650, height: 250 }} source={ magnetImage } />
         }
-        <Text>Введите название карты</Text>
+        <Text style={{
+            fontSize: 18,
+            fontWeight: '500',
+            marginTop: 45
+          }}>Введите название карты</Text>
         <TextInput
             style={styles.inputLabel}
             onChangeText={(currentCardName) => {
@@ -717,7 +760,11 @@ function BindingActivity({ route, navigation }) {
               console.log(`Введённое имя карты: ${state.inputCardName}`);
             }}
           />
-        <Text>Введите штрихкод</Text>
+        <Text style={{
+            fontSize: 18,
+            fontWeight: '500',
+            marginTop: 45
+          }}>Введите штрихкод</Text>
         <View style={{ alignItems: 'center', flexDirection: 'row' }}>
           <TextInput
             style={styles.inputLabel}
@@ -727,10 +774,12 @@ function BindingActivity({ route, navigation }) {
             }}
           />
             <TouchableOpacity onPress={() => {
-              console.log("открываем камеру")
+              setOpenScanCamera(true);
+              console.log(`открываем камеру: ${scanned}`)
             }}>
-              <Image style={{ margin: '15px', width: '30px', height: '30px' }} source={ cameraImage } />
+              <Image style={{ margin: 15, width: 30, height: 30 }} source={ cameraImage } />
             </TouchableOpacity>
+
           </View>
           <View style={ styles.addCardBtnLayout }>
             <Button color="rgb(255, 0, 0)" style={ styles.addCardBtn } title="Прикрепить карту" 
@@ -768,30 +817,30 @@ function CardsTypeActivity({ navigation }) {
       <View style={{
         alignItems: 'center', flexDirection: 'column'
       }}>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={ styles.scrollView }>
           <TouchableOpacity onPress={() => {
             console.log("переходим в окно добавления карты")
             navigation.navigate('BindingActivity', {
               cardType: "five"
             })
           }}>
-            <Image style={{ width: '650px', height: '250px' }} source={ fiveImage } />
+            <Image style={{ width: 650, height: 250 }} source={ fiveImage } />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
             console.log("переходим в окно добавления карты")
             navigation.navigate('BindingActivity', {
               cardType: "cross"
             })
-          }}>
-            <Image style={{ width: '650px', height: '250px' }} source={ crossImage } />
+          }} style={{ marginTop: 25 }}>
+            <Image style={{ width: 650, height: 250 }} source={ crossImage } />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
             console.log("переходим в окно добавления карты")
             navigation.navigate('BindingActivity', {
               cardType: "magnet"
             })
-          }}>
-            <Image style={{ width: '650px', height: '250px' }} source={ magnetImage } />
+          }} style={{ marginTop: 25 }}>
+            <Image style={{ width: 650, height: 250 }} source={ magnetImage } />
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -847,7 +896,7 @@ function LoginActivity() {
           db.transaction(transaction => {
             let sqlStatement = "CREATE TABLE IF NOT EXISTS passwords (_id INTEGER PRIMARY KEY AUTOINCREMENT, password TEXT);"
             transaction.executeSql(sqlStatement, null, (tx, receivedTable) => {
-              console.log(`tablecreate: ${receivedTable}`)
+              // console.log(`tablecreate: ${receivedTable}`)
             })
             sqlStatement = "SELECT * FROM passwords;"
             transaction.executeSql(sqlStatement, null, (tx, receivedPasswords) => {
