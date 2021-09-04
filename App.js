@@ -26,7 +26,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="CardsListActivity">
+      <Stack.Navigator initialRouteName="LoginActivity">
         <Stack.Screen name="CardDetailActivity" component={CardDetailActivity} />
         <Stack.Screen name="BindingActivity" component={BindingActivity} />
         <Stack.Screen name="CardsTypeActivity" component={CardsTypeActivity} />
@@ -197,25 +197,20 @@ function MainActivity() {
 
 
   function checkPassword(num) {
-    console.log(`набираем пароль`)
     if(password.length <= 3){
       setPassword(password + num)
-      console.log(`текущий пароль: ${password}`)
       if (password.length >= 4) {
         if(needPassword){
-          console.log("Создаем пароль")
           db.transaction(transaction => {
             let sqlStatement = `INSERT INTO \"passwords\"(password) VALUES (\"${password}\");`
             transaction.executeSql(sqlStatement, null, (tx, receivedPassword) => {
-              console.log("успешное создание пароля")
+              
             }, (tx) => {
-              console.log("ошибка создание пароля")
-              console.log("errorOfInsertPassword")
+              
             })
 
           })
         } else if(!needPassword){
-          console.log("пароль уже создан")
           db.transaction(transaction => {
             let sqlStatement = "CREATE TABLE IF NOT EXISTS passwords (_id INTEGER PRIMARY KEY AUTOINCREMENT, password TEXT);"
             transaction.executeSql(sqlStatement, null, (tx, receivedTable) => {
@@ -224,11 +219,8 @@ function MainActivity() {
             sqlStatement = "SELECT * FROM passwords;"
             transaction.executeSql(sqlStatement, null, (tx, receivedPasswords) => {
               if(password.includes(receivedPasswords.rows.item(0)[1])){
-                console.log("пароль совпадают")
                 //загружаем окно списка прикреплённых карт
               } else if(!password.includes(receivedPasswords.rows.item(0)[1])){
-                console.log("пароль не совпадают")
-                
               }
             })
           })
@@ -251,7 +243,7 @@ function MainActivity() {
             value={password}
             onChangeText={(currentPassword) => {
               state.password = currentPassword
-              console.log(`Введёный пароль: ${state.password}`);
+              
             }}
           />
         </View>
@@ -530,7 +522,7 @@ function CardsListActivity({ navigation }) {
           cardsInDB.map(card => {
             return (
               Object.values(card)[3].includes("five") ?
-                <TouchableOpacity key={Object.values(card)[0]} onPress={() => {
+                <TouchableOpacity style={{ textAlign: 'center', alignSelf: 'stretch' }} key={Object.values(card)[0]} onPress={() => {
                   navigation.navigate('CardDetailActivity', {
                     cardId: Object.values(card)[0],
                     cardName: Object.values(card)[1],
@@ -538,7 +530,7 @@ function CardsListActivity({ navigation }) {
                     cardType: Object.values(card)[3],
                   })
                 }}>
-                  <Image style={{ marginTop: 15, width: 650, height: 250 }} source={ fiveImage } />
+                  <Image style={{ textAlign: 'center', alignSelf: 'stretch', marginTop: 15, height: 50 }} source={ fiveImage } />
                 </TouchableOpacity>
                 : Object.values(card)[3].includes("cross") ?
                   <TouchableOpacity key={Object.values(card)[0]} onPress={() => {
@@ -731,15 +723,6 @@ function BindingActivity({ route, navigation }) {
   const db = SQLite.openDatabase('smartcardspickerdb.db')
   return (
     <View>
-      {
-        openScanCamera ?
-          <BarCodeScanner
-            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-            style={StyleSheet.absoluteFillObject}
-          />
-        :
-          <Text></Text> 
-      }
       {scanned && <Button title={'Tap to Scan Again'} onPress={() => {
         setScanned(false)
         // setOpenScanCamera(false);
@@ -790,24 +773,37 @@ function BindingActivity({ route, navigation }) {
 
           </View>
           <View style={ styles.addCardBtnLayout }>
-            <Button color="rgb(255, 0, 0)" style={ styles.addCardBtn } title="Прикрепить карту" 
-              onPress={ () => {
-                console.log("Добавить карту")
-                db.transaction(transaction => {
-                // let sqlStatement = `INSERT INTO \"smartcards\"(cardname, barcode, cardtype) VALUES (\"${state.inputCardName}\", \"${state.inputBarCode}\", \"${cardType}\");`
-                let sqlStatement = `INSERT INTO \"smartcards\"(cardname, barcode, cardtype) VALUES (\"${state.inputCardName}\", \"${inputBarCode}\", \"${cardType}\");`
-                  transaction.executeSql(sqlStatement, null, (tx, card) => {
-                    console.log("successOfInsert")
-                  }, (tx) => {
-                    console.log("errorOfInsert")
+            {
+              !openScanCamera ?
+              <Button color="rgb(255, 0, 0)" style={ styles.addCardBtn } title="Прикрепить карту" 
+                onPress={ () => {
+                  console.log("Добавить карту")
+                  db.transaction(transaction => {
+                  // let sqlStatement = `INSERT INTO \"smartcards\"(cardname, barcode, cardtype) VALUES (\"${state.inputCardName}\", \"${state.inputBarCode}\", \"${cardType}\");`
+                  let sqlStatement = `INSERT INTO \"smartcards\"(cardname, barcode, cardtype) VALUES (\"${state.inputCardName}\", \"${inputBarCode}\", \"${cardType}\");`
+                    transaction.executeSql(sqlStatement, null, (tx, card) => {
+                      console.log("successOfInsert")
+                    }, (tx) => {
+                      console.log("errorOfInsert")
+                    })
                   })
-                })
-                navigation.navigate("CardsListActivity")
-              } }
-            />
+                  navigation.navigate("CardsListActivity")
+                } }
+              />
+            :
+              <Text></Text>
+            }
           </View>
       </View>
-    
+      {
+        openScanCamera ?
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            style={StyleSheet.absoluteFillObject}
+          />
+        :
+          <Text></Text> 
+      }
     </View>
   );
 
@@ -859,7 +855,7 @@ function CardsTypeActivity({ navigation }) {
 
 }
 
-function LoginActivity() {
+function LoginActivity({ navigation }) {
   
 
   const fiveImage = require('./assets/five.jpg')
@@ -874,9 +870,13 @@ function LoginActivity() {
   }
 
   const db = SQLite.openDatabase('smartcardspickerdb.db')
-  const needPassword = true
+  var needPassword = true
   db.transaction(transaction => {
-    let sqlStatement = "SELECT * FROM passwords;"
+    let sqlStatement = "CREATE TABLE IF NOT EXISTS passwords (_id INTEGER PRIMARY KEY AUTOINCREMENT, password TEXT);"
+    transaction.executeSql(sqlStatement, null, (tx, receivedTable) => {
+    })
+
+    sqlStatement = "SELECT * FROM passwords;"
     transaction.executeSql(sqlStatement, null, (tx, receivedPasswords) => {
       if(receivedPasswords.rows.length >= 1){
         needPassword = false
@@ -884,37 +884,26 @@ function LoginActivity() {
     })
   })
   function checkPassword(num) {
-    console.log(`набираем пароль`)
     if(password.length <= 3){
       setPassword(password + num)
-      console.log(`текущий пароль: ${password}`)
-      if (password.length >= 4) {
+      if ((password + num).length >= 4) {
         if(needPassword){
-          console.log("Создаем пароль")
           db.transaction(transaction => {
-            let sqlStatement = `INSERT INTO \"passwords\"(password) VALUES (\"${password}\");`
+            let sqlStatement = `INSERT INTO \"passwords\"(password) VALUES (\"${password + num}\");`
             transaction.executeSql(sqlStatement, null, (tx, receivedPassword) => {
-              console.log("успешное создание пароля")
+              navigation.navigate("CardsListActivity")
             }, (tx) => {
-              console.log("ошибка создание пароля")
-              console.log("errorOfInsertPassword")
+              
             })
 
           })
         } else if(!needPassword){
-          console.log("пароль уже создан")
           db.transaction(transaction => {
-            let sqlStatement = "CREATE TABLE IF NOT EXISTS passwords (_id INTEGER PRIMARY KEY AUTOINCREMENT, password TEXT);"
-            transaction.executeSql(sqlStatement, null, (tx, receivedTable) => {
-              // console.log(`tablecreate: ${receivedTable}`)
-            })
-            sqlStatement = "SELECT * FROM passwords;"
+            let sqlStatement = "SELECT * FROM passwords;"
             transaction.executeSql(sqlStatement, null, (tx, receivedPasswords) => {
-              if(password.includes(receivedPasswords.rows.item(0)[1])){
-                console.log("пароль совпадают")
-                //загружаем окно списка прикреплённых карт
-              } else if(!password.includes(receivedPasswords.rows.item(0)[1])){
-                console.log("пароль не совпадают")
+              if((password + num).includes(Object.values(receivedPasswords.rows.item(0))[1])){
+                navigation.navigate("CardsListActivity")
+              } else if(!(password + num).includes(Object.values(receivedPasswords.rows.item(0))[1])){
                 
               }
             })
@@ -937,7 +926,6 @@ function LoginActivity() {
             value={password}
             onChangeText={(currentPassword) => {
               state.password = currentPassword
-              console.log(`Введёный пароль: ${state.password}`);
             }}
           />
         </View>
